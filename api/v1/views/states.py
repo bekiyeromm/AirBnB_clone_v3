@@ -21,9 +21,9 @@ def all_states():
 def retrieve_state(state_id):
     """retrieve a particular State using id"""
     state = storage.get(State, state_id)
-    if state is None:
-        abort(404)
-    return jsonify(state.to_dict())
+    if state:
+        return jsonify(state.to_dict())
+    abort(404)
 
 
 @app_views.route('/states/<state_id>', methods=['DELETE'],
@@ -32,9 +32,9 @@ def delete_state(state_id):
     """ DELETE Method to delete a State """
     state = storage.get('State', state_id)
     if state:
-        state.delete()
+        storage.delete(state)
         storage.save()
-        return {}
+        return ({})
     abort(404)
 
 
@@ -44,12 +44,11 @@ def create_state():
     """ POST Method to create a State """
     state_name = request.get_json()
     if not state_name:
-        abort(400, {'Not a JSON'})
+        abort(400, 'Not a JSON')
     elif 'name' not in state_name:
-        abort(400, {'Missing name'})
+        abort(400, 'Missing name')
     new_state = State(**state_name)
-    storage.new(new_state)
-    storage.save()
+    new_state.save()
     return new_state.to_dict(), 201
 
 
@@ -66,4 +65,4 @@ def update_state(state_id):
     for key, value in update_attr.items():
         setattr(my_state, key, value)
     storage.save()
-    return my_state.to_dict()
+    return jsonify(my_state.to_dict()), 200
