@@ -20,7 +20,7 @@ def all_states():
                  strict_slashes=False)
 def retrieve_state(state_id):
     """retrieve a particular State using id"""
-    state = storage.get(State, state_id)
+    state = State.get(state_id)
     if state:
         return jsonify(state.to_dict())
     abort(404)
