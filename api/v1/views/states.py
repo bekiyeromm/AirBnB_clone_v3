@@ -18,12 +18,26 @@ def all_states():
 
 @app_views.route('/states/<state_id>', methods=['GET'],
                  strict_slashes=False)
-def retrieve_state(state_id):
-    """retrieve a particular State using id"""
+
+def state(state_id=None): 
+     """ 
+     function to retrieve list of all states 
+     """ 
+     if state_id is None: 
+         states = storage.all("State") 
+         get_state = [value.to_dict() for key, value in states.items()] 
+         return (jsonify(get_state)) 
+     get_state = storage.get("State", state_id) 
+     if get_state is not None: 
+         return (jsonify(get_state.to_dict())) 
+     abort(404)
+"""def retrieve_state(state_id):
+    retrieve a particular State using id
     state = storage.get('State', state_id)
     if state:
         return jsonify(state.to_dict())
     abort(404)
+"""
 
 
 @app_views.route('/states/<state_id>', methods=['DELETE'],
