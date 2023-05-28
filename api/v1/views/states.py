@@ -28,7 +28,6 @@ def retrieve_state(state_id):
 
 @app_views.route('/states/<state_id>', methods=['DELETE'],
                  strict_slashes=False)
-
 def delete_state(state_id):
     '''Deletes a State object'''
     all_states = storage.all("State").values()
@@ -41,15 +40,6 @@ def delete_state(state_id):
             storage.delete(obj)
             storage.save()
     return jsonify({}), 200
-"""def delete_state(state_id):
-     DELETE Method to delete a State
-    state = storage.get('State', state_id)
-    if state:
-        storage.delete(state)
-        storage.save()
-        return ({})
-    abort(404)
-"""
 
 
 @app_views.route('/states', methods=['POST'],
