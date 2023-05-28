@@ -19,11 +19,12 @@ def all_states():
 @app_views.route('/states/<state_id>', methods=['GET'],
                  strict_slashes=False)
 def retrieve_state(state_id):
-    """retrieve a particular State using id"""
-    state = storage.get('State', state_id)
-    if state:
-        return jsonify(state.to_dict())
-    abort(404)
+    """retrieve a particular State using state id"""
+    state = storage.all(State).values()
+    state_obj = [obj.to_dict() for obj in state if obj.id == state_id]
+    if state_obj == []:
+        abort(404)
+    return jsonify(state_obj[0])
 
 
 @app_views.route('/states/<state_id>', methods=['DELETE'],
