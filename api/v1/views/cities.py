@@ -17,7 +17,7 @@ def list_all_cities(state_id):
     """retrives all list of cities"""
     states = storage.all("State").values()
     state = [x.to_dict() for x in states if x.id == state_id]
-    if states == []:
+    if state == []:
         abort(404)
     cities = [x.to_dict() for x in storage.all("City").values()
                    if (state_id == x.state_id)
