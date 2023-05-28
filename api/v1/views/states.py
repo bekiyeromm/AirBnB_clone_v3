@@ -49,7 +49,7 @@ def create_state():
     state_name = request.get_json()
     if not state_name:
         abort(400, 'Not a JSON')
-    elif 'name' not in state_name:
+    if 'name' not in state_name:
         abort(400, 'Missing name')
     states = []
     new_state = State(name=request.json['name'])
