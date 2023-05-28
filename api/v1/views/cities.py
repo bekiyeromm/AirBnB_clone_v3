@@ -40,8 +40,8 @@ def get_city(city_id):
 def delete_city(city_id):
     """ DELETE a City by using city_id """
     cities = storage.all("City").values()
-    city = [x.to-dict() for x in cities if x.id == city_id]
-    if not city:
+    city = [x.to_dict() for x in cities if x.id == city_id]
+    if city == []:
         abort(404)
     city.remove(city[0])
     for x in cities:
