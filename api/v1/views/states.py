@@ -51,22 +51,27 @@ def create_state():
         abort(400, 'Not a JSON')
     elif 'name' not in state_name:
         abort(400, 'Missing name')
-    new_state = State(**state_name)
-    new_state.save()
-    return new_state.to_dict(), 201
+    states = []
+    new_state = State(name=request.json['name'])
+    storage.new(new_state)
+    storage.save()
+    states.append(new_state.to_dict())
+    return jsonify(states[0]), 201
 
 
 @app_views.route('/states/<state_id>', methods=['PUT'],
                  strict_slashes=False)
 def update_state(state_id):
     """ PUT Method to update a State """
-    update_attr = request.get_json()
-    if not update_attr:
-        abort(400, {'Not a JSON'})
-    my_state = storage.get('State', state_id)
-    if not my_state:
+    all_state = storage.all("State").values()
+    state_obj = [obj.to_dict() for obj in all_state if obj.id == state_id]
+    if state_obj == []:
         abort(404)
-    for key, value in update_attr.items():
-        setattr(my_state, key, value)
+    if not request.get_json():
+        abort(400, 'Not a JSON')
+    state_obj[0]['name'] = request.json['name']
+    for obj in all_state:
+        if obj.id == state_id:
+            obj.name = request.json['name']
     storage.save()
-    return jsonify(my_state.to_dict()), 200
+    return jsonify(state_obj[0]), 200
