@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 """places_amenities"""
 from api.v1.views import app_views
-from flask import Flask, jsonify, request, abort
+from flask import jsonify, request, abort
 from models import storage
 from models.amenity import Amenity
-from models.state import Place
+from models.place import Place
 
 
 @app_views.route('/places/<place_id>/amenities', methods=['GET'],
