@@ -5,6 +5,7 @@ Contains class BaseModel
 
 from datetime import datetime
 import models
+import hashlib
 from os import getenv
 import sqlalchemy
 from sqlalchemy import Column, String, DateTime
@@ -58,9 +59,11 @@ class BaseModel:
         models.storage.new(self)
         models.storage.save()
 
-    def to_dict(self):
+    def to_dict(self, save_password=False):
         """returns a dictionary containing all keys/values of the instance"""
         new_dict = self.__dict__.copy()
+        if not save_password and 'password' in new_dict:
+            del new_dict['password']
         if "created_at" in new_dict:
             new_dict["created_at"] = new_dict["created_at"].strftime(time)
         if "updated_at" in new_dict:
