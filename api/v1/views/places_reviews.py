@@ -16,7 +16,7 @@ def reviews_of_place(place_id):
     if place == []:
         abort(404)
     reviews = [y.to_dict() for y in storage.all("Review").values()
-               if place_id == y.place_id]
+               if y.place_id == place_id]
     return jsonify(reviews)
 
 
@@ -53,8 +53,7 @@ def create_review(place_id):
     reviews = []
     new_review = Review(text=request.json['text'], place_id=place_id,
                         user_id=user_id)
-    storage.new(new_review)
-    storage.save()
+    new_review.save()
     reviews.append(new_review.to_dict())
     return jsonify(reviews[0]), 201
 
@@ -67,7 +66,7 @@ def delete_review(review_id):
     review = [x.to_dict() for x in reviews if x.id == review_id]
     if review == []:
         abort(404)
-    for y in all_reviews:
+    for y in reviews:
         if y.id == review_id:
             storage.delete(y)
             storage.save()
@@ -84,10 +83,11 @@ def update_review(review_id):
         abort(404)
     if not request.get_json():
         abort(400, 'Not a JSON')
-    data = request.get_json()
     ignore_keys = ['id', 'user_id', 'place_id', 'created_at', 'updated_at']
-    for key, value in data.items():
-        if key not in ignore_keys:
+    for key, value in request.get_json().items():
+        if key in ignore_keys:
+            continue
+        else:
             setattr(review, key, value)
-    review.save()
-    return jsonify(review.to_dict()), 200
+    storage.save()
+    return jsonify(reviews.to_dict()), 200
