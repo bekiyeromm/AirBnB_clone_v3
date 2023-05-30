@@ -10,7 +10,7 @@ from models.place import Place
 from models.city import City
 
 
-@app_views.route('/cities/<city_id>/places/', methods=['GET'],
+@app_views.route('/cities/<city_id>/places', methods=['GET'],
                  strict_slashes=False)
 def places_of_city(city_id):
     '''list all Place objects in city'''
