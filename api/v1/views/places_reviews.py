@@ -66,6 +66,7 @@ def delete_review(review_id):
     review = [x.to_dict() for x in reviews if x.id == review_id]
     if review == []:
         abort(404)
+    review.remove(review[0])
     for y in reviews:
         if y.id == review_id:
             storage.delete(y)
@@ -81,6 +82,8 @@ def update_review(review_id):
     review = [x.to_dict() for x in reviews if x.id == review_id]
     if review == []:
         abort(404)
+    if not request.is_json:
+        abort(400, 'Not a JSON')
     if not request.get_json():
         abort(400, 'Not a JSON')
     ignore_keys = ['id', 'user_id', 'place_id', 'created_at', 'updated_at']
@@ -88,6 +91,6 @@ def update_review(review_id):
         if key in ignore_keys:
             continue
         else:
-            setattr(review, key, value)
-    review.save()
+            setattr(reviews, key, value)
+    storage.save()
     return jsonify(review.to_dict()), 200
