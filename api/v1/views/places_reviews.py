@@ -89,5 +89,5 @@ def update_review(review_id):
             continue
         else:
             setattr(review, key, value)
-    storage.save()
+    review.save()
     return jsonify(review.to_dict()), 200
